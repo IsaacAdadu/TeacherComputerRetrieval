@@ -11,6 +11,12 @@ namespace TeacherComputerRetrieval.Infrastructure.Services
 {
     public class RouteService : IRouteService
     {
+
+        private static RouteService _lastInstance;
+
+        public static bool LastInstanceExists => _lastInstance != null;
+        public static RouteService GetLastInstance() => _lastInstance;
+
         private readonly Dictionary<string, List<Route>> _routeMap;
 
         public RouteService(IEnumerable<Route> routes)
@@ -22,6 +28,7 @@ namespace TeacherComputerRetrieval.Infrastructure.Services
                     _routeMap[route.From] = new();
                 _routeMap[route.From].Add(route);
             }
+            _lastInstance = this;
         }
 
         public PathResult CalculateRouteDistance(string[] path)
@@ -118,5 +125,7 @@ namespace TeacherComputerRetrieval.Infrastructure.Services
                 DfsBounded(edge.To, target, currentDistance + edge.Distance, ref minDistance, maxDepth, depth + 1);
             }
         }
+
+        
     }
 }
